@@ -1,0 +1,5 @@
+[project]
+name = "PySide Widgets Project"
+
+[tool.pyside6-project]
+files = ["SettingsDlg.py", "SettingsDlg.ui", "camview.py", "form.ui", "mainwindow.py", "ui_SettingsDlg.py"]
