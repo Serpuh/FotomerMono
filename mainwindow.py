@@ -114,7 +114,7 @@ class MainWindow(QMainWindow):
 
             hh=10
             """
-            QMessageBox.information(self, "hui1", self.file_img_path)
+            QMessageBox.information(self, "qqq", self.file_img_path)
             self.calc1()
             """
 

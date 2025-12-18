@@ -1,8 +1,11 @@
+from PySide6.QtCore import ( Qt, Signal, QRectF, QPointF )
+
 from PySide6.QtWidgets import (
     QGraphicsItem, QGraphicsEllipseItem, QGraphicsDropShadowEffect,
     QStyleOptionGraphicsItem, QWidget, QStyle
 )
-from PySide6.QtCore import Qt, QRectF, QPointF, Signal
+
+
 from PySide6.QtGui import (
     QPainter, QPainterPath, QPen, QBrush, QColor,
     QPainterPathStroker, QRadialGradient

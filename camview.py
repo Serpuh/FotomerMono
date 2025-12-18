@@ -9,6 +9,8 @@ os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 import cv2
 import math
 
+from Knot import Knot
+
 class CamView(QGraphicsView):
 
     transformChanged = Signal()
@@ -46,6 +48,11 @@ class CamView(QGraphicsView):
         #self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
 
         #self.setRenderHints(Qt.renderHints() | Qt.Antialiasing)
+
+        self.knot1 = Knot(500, 500, size=50)
+        self.knot1.positionChanged.connect(lambda: self.on_knot_moved)
+        self.knot1.positionChanged
+        self.scene.addItem(self.knot1)   
             
         
         # for panning
@@ -61,6 +68,32 @@ class CamView(QGraphicsView):
         self.verticalScrollBar().valueChanged.connect(self._emit_scroll_changed)  
         
         self.mogeExr = None
+
+    def on_knot_moved(self, pos):
+        """Update line when knots move."""
+        sender = self.sender()
+        
+        """
+        if sender == self.knot1:
+            # Update line from knot1 to knot2
+            self.line.setLine(
+                self.knot1.pos().x(), self.knot1.pos().y(),
+                self.knot2.pos().x(), self.knot2.pos().y()
+            )
+        else:
+            # Update line from knot2 to knot1
+            self.line.setLine(
+                self.knot2.pos().x(), self.knot2.pos().y(),
+                self.knot1.pos().x(), self.knot1.pos().y()
+            )
+        """
+        
+                
+        # Add to scene
+             
+
+    def on_knot_moved(self, pos):
+       print(f"Knot moved to: {pos.x():.1f}, {pos.y():.1f}")
         
 
     def addImage(self, path):
@@ -71,6 +104,13 @@ class CamView(QGraphicsView):
 
         pixmap_item = QGraphicsPixmapItem(pixmap)
         self.scene.addItem(pixmap_item)
+
+        """
+        self.knot1 = Knot(500, 500, size=50)
+        self.knot1.positionChanged.connect(lambda: self.on_knot_moved)
+        self.knot1.positionChanged.
+        self.scene.addItem(self.knot1)   
+        """
     
         # Set scene rect to image size
         #self.scene.setSceneRect(QRectF(pixmap.rect()))
