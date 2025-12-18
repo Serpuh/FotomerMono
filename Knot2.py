@@ -16,11 +16,10 @@ from PySide6.QtGui import (
 
 class Knot2( QGraphicsEllipseItem ):
   
-    #positionChanged2 = Signal()
+    positionChanged2 = Signal()
     
     def __init__(self):
-        super().__init__()
-        self.positionChanged2 = Signal()
+        super().__init__()        
         self.positionChanged2.connect(self.testSignal)  # test link
         self.positionChanged2.emit()
 

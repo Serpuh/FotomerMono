@@ -1,4 +1,4 @@
-from PySide6.QtCore import ( Qt, Signal, QRectF, QPointF )
+from PySide6.QtCore import ( Qt, QObject, Signal, QRectF, QPointF )
 
 from PySide6.QtWidgets import (
     QGraphicsItem, QGraphicsEllipseItem, QGraphicsDropShadowEffect,
@@ -14,7 +14,7 @@ from PySide6.QtGui import (
 class Knot(QGraphicsItem):
     """A more advanced knot item with custom shape."""
     
-    positionChanged = Signal(QPointF)
+    positionChanged1 = Signal(QGraphicsItem, QPointF)
     
     def __init__(self, x=0, y=0, size=12):
         super().__init__()

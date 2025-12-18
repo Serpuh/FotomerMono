@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="camview.py" />
     <Compile Include="Knot.py" />
+    <Compile Include="Knot2.py" />
     <Compile Include="mainwindow.py" />
     <Compile Include="SettingsDlg.py" />
     <Compile Include="ui_form.py" />

@@ -10,6 +10,7 @@ import cv2
 import math
 
 from Knot import Knot
+from Knot2 import Knot2
 
 class CamView(QGraphicsView):
 
@@ -49,10 +50,20 @@ class CamView(QGraphicsView):
 
         #self.setRenderHints(Qt.renderHints() | Qt.Antialiasing)
 
-        self.knot1 = Knot(500, 500, size=50)
-        self.knot1.positionChanged.connect(lambda: self.on_knot_moved)
-        self.knot1.positionChanged
-        self.scene.addItem(self.knot1)   
+        self.knot1 = Knot2()
+        #self.knot1.positionChanged1.connect(self.on_knot_moved)
+        #self.knot2.positionChanged2.connect(self.on_knot_moved)
+        #self.knot2.positionChanged2.emit()
+        #self.scene.addItem(self.knot2)   
+
+        # Store knots
+        #self.knots = []
+        
+        # Add some initial knots
+        #self.knot2 = Knot2(QPointF(100, 100), "A", Qt.blue)
+        #self.scene.addItem(self.knot2)   
+        #self.add_knot(QPointF(200, 200), "B", Qt.green)
+        #self.add_knot(QPointF(300, 300), "C", Qt.red)
             
         
         # for panning
@@ -69,31 +80,11 @@ class CamView(QGraphicsView):
         
         self.mogeExr = None
 
-    def on_knot_moved(self, pos):
-        """Update line when knots move."""
-        sender = self.sender()
-        
-        """
-        if sender == self.knot1:
-            # Update line from knot1 to knot2
-            self.line.setLine(
-                self.knot1.pos().x(), self.knot1.pos().y(),
-                self.knot2.pos().x(), self.knot2.pos().y()
-            )
-        else:
-            # Update line from knot2 to knot1
-            self.line.setLine(
-                self.knot2.pos().x(), self.knot2.pos().y(),
-                self.knot1.pos().x(), self.knot1.pos().y()
-            )
-        """
-        
-                
-        # Add to scene
-             
 
-    def on_knot_moved(self, pos):
-       print(f"Knot moved to: {pos.x():.1f}, {pos.y():.1f}")
+
+    def on_knot_moved(self):
+       #print(f"Knot moved to: {pos.x():.1f}, {pos.y():.1f}")
+       print(f"Knot moved")
         
 
     def addImage(self, path):
