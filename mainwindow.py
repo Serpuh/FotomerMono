@@ -11,12 +11,13 @@ from SettingsDlg import SettingsDlg
 path1 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(path1)
 
+"""
 from moge.model.v2 import MoGeModel
 # from moge.model import import_model_class_by_version
 from moge.utils.io import save_glb, save_ply
 from moge.utils.vis import colorize_depth, colorize_normal
-
 # from moge.utils.geometry_numpy import depth_occlusion_edge_numpy
+"""
 
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 #os.environ["QT_DEBUG_PLUGINS"] = "1"
@@ -39,24 +40,6 @@ class MainWindow(QMainWindow):
         self.SettingsDlg = None
         self.file_img_path = None
 
-        #d = (273-10)/(273+10)*2.2
-        #self.connect_transformations()
-        #self.connect_scrollbars()
-
-        #self.ui.gView1.addSuncView(self.ui.gView2)
-        #self.ui.gView2.addSuncView(self.ui.gView1)
-
-        # Connect signals so views sync zoom
-        #self.ui.gView1.zoomChanged.connect(self.on_zoom_changed)
-        #self.ui.gView2.zoomChanged.connect(self.on_zoom_changed)
-
-         # Connect the signal so each view updates the other
-        #self.ui.gView1.transformed.connect(self.ui.gView2.sync_transform)
-        #self.ui.gView2.transformed.connect(self.ui.gView1.sync_transform)
-
-        #self.ui.gView1.transformChanged.connect(self.ui.gView2.setTransform)
-        #self.ui.gView2.transformChanged.connect(self.ui.gView1.setTransform)
-
         # sync signals
         self.ui.gView1.transformChanged.connect(
             lambda: self._sync_transform(self.ui.gView1, self.ui.gView2)
@@ -70,8 +53,9 @@ class MainWindow(QMainWindow):
         self.ui.gView2.scrollChanged.connect(
             lambda: self._sync_scroll(self.ui.gView2, self.ui.gView1)
         )
-
-        self.statusBar().showMessage("test1")
+        #self.ui.statusbar.showMessage("test1")
+        self.ui.gView1.pMainWindow = self
+        self.statusBar().showMessage("No image")
 
     def _sync_transform(self, source, target):
         # block slot to avoid feedback
@@ -111,6 +95,9 @@ class MainWindow(QMainWindow):
             self.ui.gView2.addImage(self.file_img_path)
 
             self.setWindowTitle(self.file_img_path)
+
+            self.ui.gView1.setSatusBar(self.statusBar())
+            self.ui.gView2.setSatusBar(self.statusBar())
 
             hh=10
             """

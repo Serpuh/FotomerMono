@@ -19,21 +19,22 @@ class Point3d:
     y: float = None
     y: float = None
 
-class QGraphicsDimensionalLine(QGraphicsItem):
+class DimenLine(QGraphicsItem):
     """A dimension line graphics item with arrows and text"""
     
-    def __init__(self, start_point: QPointF = None, end_point: QPointF = None):
+    def __init__(self, start_point: QPointF = None, end_point: QPointF = None, P1: QVector3D = None, P2: QVector3D = None):
         super().__init__()
         
         # Line properties
-        P1: QVector3D = None
-        P2: QVector3D = None
+        self.P1: QVector3D = P1
+        self.P2: QVector3D = P2
 
         self._start_point = start_point if start_point else QPointF(0, 0)
         self._end_point = end_point if end_point else QPointF(100, 100)
         
         # Visual properties
-        self._line_color = QColor(0, 100, 200)  # Blue color
+        #self._line_color = QColor(0, 100, 200)  # Blue color
+        self._line_color = QColor(0, 255, 0)  # Blue color
         self._line_width = 1.0
         self._text_color = Qt.red
         self._text_bg_color = QColor(255, 255, 255, 220)  # Semi-transparent white
@@ -44,7 +45,8 @@ class QGraphicsDimensionalLine(QGraphicsItem):
         
         # Text properties
         self._font = QFont("Arial", 10)
-        self._text = self._calculate_distance_text()
+        #self._text = self._calculate_distance_text()
+        self._text = self._calculate_distance_text_3d()
         
         # Selection state
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -54,6 +56,30 @@ class QGraphicsDimensionalLine(QGraphicsItem):
         # Update bounding rect
         self._update_bounding_rect()
     
+    def set_points(self, start_point: QPointF, end_point: QPointF, P1: QVector3D, P2: QVector3D):
+        """Set the start and end points of the dimension line"""
+        self.prepareGeometryChange()
+        self._start_point = start_point
+        self._end_point = end_point
+        self.P1 = P1
+        self.P2 = P2
+        self._text = self._calculate_distance_text_3d()
+        self._update_bounding_rect()
+        self.update()
+
+    def _calculate_distance_text_3d(self) -> str:
+        """Calculate the distance between points and format as text"""
+        line = QLineF(self._start_point, self._end_point)
+        distance = self.P1.distanceToPoint(self.P2)
+        
+        # Format based on distance
+        if distance < 10:
+            return f"{distance:.2f}"
+        elif distance < 100:
+            return f"{distance:.1f}"
+        else:
+            return f"{int(distance)}"
+
     def _calculate_distance_text(self) -> str:
         """Calculate the distance between points and format as text"""
         line = QLineF(self._start_point, self._end_point)
@@ -94,14 +120,7 @@ class QGraphicsDimensionalLine(QGraphicsItem):
         self._bounding_rect = line_rect.united(QRectF(text_rect))
         #self._bounding_rect = text_rect
     
-    def set_points(self, start_point: QPointF, end_point: QPointF):
-        """Set the start and end points of the dimension line"""
-        self.prepareGeometryChange()
-        self._start_point = start_point
-        self._end_point = end_point
-        self._text = self._calculate_distance_text()
-        self._update_bounding_rect()
-        self.update()
+    
     
     def boundingRect(self) -> QRectF:
         """Return the bounding rectangle of the item"""

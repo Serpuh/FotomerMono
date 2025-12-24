@@ -25,8 +25,8 @@ from moge.utils.vis import colorize_depth, colorize_normal
 # from moge.utils.geometry_numpy import depth_occlusion_edge_numpy
 
 from PySide6.QtWidgets import QDialog
-from PySide6.QtCore import QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import QUrl, QRegularExpression
+from PySide6.QtGui import QDesktopServices, QDoubleValidator, QRegularExpressionValidator
 
 from ui_SettingsDlg import Ui_SettingsDlg
 
@@ -54,17 +54,30 @@ class SettingsDlg(QDialog):
         else:
            self.ui.gpuComboBox.setCurrentIndex(1)
            self.ui.gpuComboBox.setEnabled(False)
+
+        self.fov_x=None
+
+        validator = QDoubleValidator()     
+        #validator.setNotation(QDoubleValidator.StandardNotation)
+        #validator = QRegularExpressionValidator(QRegularExpression(r"^(0|[1-9]\d*)(\.\d+)?$"))          
+        validator.setRange(0.1, 120.0, 2)
+        self.ui.fov_x.setValidator(validator)
         hh=10
 
     def show(self):
         # Дополнительные действия перед показом
-        print("The dialog will be shown")
+        #print("The dialog will be shown")
         
         # Можно изменить состояние перед показом
         if(self.file_img_path == None):
             self.ui.calcButton.setEnabled(False)
         else:
             self.ui.calcButton.setEnabled(True)
+
+        if(self.fov_x == None):
+            self.ui.fov_x.setEnabled(False)
+        else:
+            self.ui.fov_x.setEnabled(True)
         
         # Вызываем родительский метод
         super().show()
@@ -73,19 +86,13 @@ class SettingsDlg(QDialog):
         self.after_show()
     
     def after_show(self):
-        print("The dialog is shown")
+        #print("The dialog is shown")
+        hh=10
         # Дополнительная логика после показа
         
-    def OnButtonCalc(self):
-        print("OnButtonCalc")
+    def OnButtonCalc(self):        
 
-        img_path = self.file_img_path        
-
-        camera_matrix = np.array([[5800, 0, 2583],
-                                  [0, 5800, 1688],
-                                  [0, 0, 1]], dtype=np.float32);
-        dist_coefs = np.array([-0.125498,  0.125945, 0, 0, 0.00892037], dtype=np.float32);
-
+        img_path = self.file_img_path       
 
         mPATH = Path(img_path)
         img_name = mPATH.name
@@ -111,7 +118,7 @@ class SettingsDlg(QDialog):
         print(f"cuda_available - {cuda_available}")
 
         device = torch.device("cpu")
-        if(self.ui.gpuComboBox.currentIndex()==0):
+        if(self.ui.gpuComboBox.currentText()=="gpu"):
             device = torch.device("cuda")
             print("use cuda")
         else:
@@ -119,7 +126,7 @@ class SettingsDlg(QDialog):
             print("use cpu")
         
         model = MoGeModel.from_pretrained(modelPath).to(device)
-        model.max_depth_m = 100
+        #model.max_depth_m = 100
         end = time.time()
         print(f"model = MoGeModel.from_pretrained: {end - start:.2f} sec")
 
@@ -132,7 +139,7 @@ class SettingsDlg(QDialog):
         input_image_t = torch.tensor(input_image / 255, dtype=torch.float32, device=device).permute(2, 0, 1)    
 
 
-        fov_1 = math.degrees(math.atan(float(2592)/float(5800)))*2
+        #fov_1 = math.degrees(math.atan(float(2592)/float(5800)))*2
         #fov_1 = 1
 
         #diag = math.sqrt(h**2+w**2)
@@ -161,7 +168,8 @@ class SettingsDlg(QDialog):
                 force_projection=True,
                 apply_mask=True,
                 fov_x=None,                
-                use_fp16=False)
+                use_fp16=False,
+                max_depth_m=25)
         #output = model.infer(input_image_t)
         points, depth, mask, intrinsics, focal_X  = output['points'].cpu().numpy(), output['depth'].cpu().numpy(), output['mask'].cpu().numpy(), output['intrinsics'].cpu().numpy(),  output['focal'].cpu().numpy()
         normal = output['normal'].cpu().numpy()
@@ -169,6 +177,9 @@ class SettingsDlg(QDialog):
         print("infer done "+img_name+f" {end - start: .2f} sec")
         print("focal_X "+f"{focal_X: .1f}")
 
+        self.fov_x = focal_X
+        self.ui.fov_x.setText(f"{self.fov_x:.1f}")
+        
 
         start = time.time()
         cv2.imwrite(Path.joinpath(output_dir,img_name_without_ext+".png"), cv2.cvtColor(colorize_depth(depth), cv2.COLOR_RGB2BGR))

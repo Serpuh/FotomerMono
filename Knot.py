@@ -11,13 +11,14 @@ from PySide6.QtGui import (
     QPainterPathStroker, QRadialGradient
 )
 
-class Knot(QGraphicsItem):
+class Knot(QGraphicsItem, QObject):
     """A more advanced knot item with custom shape."""
     
-    positionChanged1 = Signal(QGraphicsItem, QPointF)
+    positionChanged1 = Signal(QPointF)
     
     def __init__(self, x=0, y=0, size=12):
         super().__init__()
+        QObject.__init__(self)
         
         self.size = size
         self._is_dragging = False

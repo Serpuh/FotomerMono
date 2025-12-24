@@ -23,12 +23,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="camview.py" />
+    <Compile Include="DimenLine2.py" />
     <Compile Include="Knot.py" />
     <Compile Include="Knot2.py" />
     <Compile Include="mainwindow.py" />
     <Compile Include="SettingsDlg.py" />
     <Compile Include="ui_form.py" />
     <Compile Include="ui_SettingsDlg.py" />
+    <Compile Include="v2.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|VisualStudio|Moge2 (Python 3.13 (64-bit))" />

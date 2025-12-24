@@ -14,13 +14,17 @@ from PySide6.QtGui import (
 )
 
 
-class Knot2( QGraphicsEllipseItem ):
-  
-    positionChanged2 = Signal()
-    
+class Knot2(QGraphicsEllipseItem, QObject):
+    positionChanged2 = Signal()  # Define the signal as a class attribute
+
     def __init__(self):
-        super().__init__()        
-        self.positionChanged2.connect(self.testSignal)  # test link
+        super().__init__()
+        QObject.__init__(self)  # Explicitly initialize QObject
+
+        # Connect the signal to the slot
+        self.positionChanged2.connect(self.testSignal)
+
+        # Emit the signal
         self.positionChanged2.emit()
 
     def testSignal(self):
