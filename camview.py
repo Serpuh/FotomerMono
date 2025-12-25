@@ -93,8 +93,7 @@ class CamView(QGraphicsView, QObject):
     def addEXR(self, path, fov_x):
         self.mogeExr = cv2.imread(path, cv2.IMREAD_ANYDEPTH | cv2.IMREAD_ANYCOLOR)
         self.height_img, self.width_img = self.mogeExr.shape[:2]
-        self.f_pix = (self.height_img/2.)/math.tan( math.radians(fov_x/2.) )
-        
+        self.f_pix = (self.height_img/2.)/math.tan( math.radians(fov_x/2.) )        
         hh = 0
     
     def wheelEvent(self, event):        
@@ -190,7 +189,7 @@ class CamView(QGraphicsView, QObject):
                 Z = self.mogeExr[ y1,x1 ]                
 
                 if(math.isinf(Z)): 
-                    print("No data")
+                    #print("No data")
                     self.statusBar.showMessage("No data")
                     bb = False
                 else:
@@ -198,11 +197,11 @@ class CamView(QGraphicsView, QObject):
                     Y = (y1 - cy_pix) * Z / self.f_pix
                     result = f"XYZ {X: .2f} {Y: .2f} {Z: .2f}"
                     self.statusBar.showMessage(result)
-                    print(result)  
+                    #print(result)  
                     bb = True
 
         else: 
-            print("Out of image")
+            #print("Out of image")
             self.statusBar.showMessage("Out of image")
             bb = False
 

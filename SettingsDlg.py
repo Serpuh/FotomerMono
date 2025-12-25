@@ -9,6 +9,7 @@ import math
 from pathlib import Path
 
 import cv2
+import time
 
 path1 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(path1)
@@ -25,8 +26,8 @@ from moge.utils.vis import colorize_depth, colorize_normal
 # from moge.utils.geometry_numpy import depth_occlusion_edge_numpy
 
 from PySide6.QtWidgets import QDialog
-from PySide6.QtCore import QUrl, QRegularExpression
-from PySide6.QtGui import QDesktopServices, QDoubleValidator, QRegularExpressionValidator
+from PySide6.QtCore import QUrl, QRegularExpression, QTimer
+from PySide6.QtGui import QDesktopServices, QDoubleValidator, QRegularExpressionValidator, QTextCursor
 
 from ui_SettingsDlg import Ui_SettingsDlg
 
@@ -46,22 +47,38 @@ class SettingsDlg(QDialog):
         self.file_img_path = None
         self.Ui_MainWindow = parent.ui
 
+        self.ui.openFolderButton.clicked.connect(self.OnFolderOpen)
+
         self.ui.gpuComboBox.addItem("gpu")
         self.ui.gpuComboBox.addItem("cpu")
         self.ui.gpuComboBox.setCurrentIndex(0)
+        self.ui.text1.setEnabled(False)
         if(torch.cuda.is_available()):
-            self.ui.gpuComboBox.setCurrentIndex(0)            
+            self.ui.gpuComboBox.setCurrentIndex(0)  
+            self.ui.text1.setPlainText("gpu available\n")
+            self.ui.text1.moveCursor(QTextCursor.End)
         else:
            self.ui.gpuComboBox.setCurrentIndex(1)
            self.ui.gpuComboBox.setEnabled(False)
+           self.ui.text1.setPlainText("gpu not available\n")
+           self.text_edit.moveCursor(QTextCursor.End)
+
+        self.ui.qualityComboBox.addItem("small")
+        self.ui.qualityComboBox.addItem("middle")
+        self.ui.qualityComboBox.addItem("best")
+        self.ui.qualityComboBox.setCurrentIndex(1)
+                
 
         self.fov_x=None
+        self.max_depth_m = 100
+        self.ui.max_depth_m.setText(f"{self.max_depth_m:.1f}")
 
         validator = QDoubleValidator()     
         #validator.setNotation(QDoubleValidator.StandardNotation)
         #validator = QRegularExpressionValidator(QRegularExpression(r"^(0|[1-9]\d*)(\.\d+)?$"))          
         validator.setRange(0.1, 120.0, 2)
         self.ui.fov_x.setValidator(validator)
+        self.ui.max_depth_m.setValidator(validator)
         hh=10
 
     def show(self):
@@ -89,11 +106,18 @@ class SettingsDlg(QDialog):
         #print("The dialog is shown")
         hh=10
         # Дополнительная логика после показа
+
+    def updateText(self):
+        self.ui.text1.update()
         
     def OnButtonCalc(self):        
+        self.ui.text1.setPlainText(f"Calculation start\n")
+        self.ui.text1.moveCursor(QTextCursor.End)
+        self.ui.text1.update()
+
+        QTimer.singleShot(1000,self.updateText)       
 
         img_path = self.file_img_path       
-
         mPATH = Path(img_path)
         img_name = mPATH.name
         img_name_without_ext = mPATH.stem
@@ -130,6 +154,9 @@ class SettingsDlg(QDialog):
         end = time.time()
         print(f"model = MoGeModel.from_pretrained: {end - start:.2f} sec")
 
+        self.ui.text1.setPlainText(f"model = MoGeModel.from_pretrained: {end - start:.2f} sec\n")
+        self.ui.text1.moveCursor(QTextCursor.End)
+
         # Read the input image and convert to tensor (3, H, W) with RGB values normalized to [0, 1]
         input_image = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB) 
         #h,w = input_image.shape[:2]
@@ -146,6 +173,7 @@ class SettingsDlg(QDialog):
         #fov_1 = math.degrees(math.atan(float(diag/2)/float(5800)))*2
         #fov_1 = 55
         # Infer 
+        
         start = time.time()
         """
         def infer(
@@ -169,13 +197,16 @@ class SettingsDlg(QDialog):
                 apply_mask=True,
                 fov_x=None,                
                 use_fp16=False,
-                max_depth_m=25)
+                max_depth_m=self.max_depth_m)
         #output = model.infer(input_image_t)
         points, depth, mask, intrinsics, focal_X  = output['points'].cpu().numpy(), output['depth'].cpu().numpy(), output['mask'].cpu().numpy(), output['intrinsics'].cpu().numpy(),  output['focal'].cpu().numpy()
         normal = output['normal'].cpu().numpy()
         end = time.time()
-        print("infer done "+img_name+f" {end - start: .2f} sec")
+        print("Calculation done "+img_name+f" {end - start: .2f} sec")
         print("focal_X "+f"{focal_X: .1f}")
+
+        self.ui.text1.setPlainText(f"infer done {end - start: .2f} sec\nfocal_X "+f"{focal_X: .1f}")
+        self.ui.text1.moveCursor(QTextCursor.End)
 
         self.fov_x = focal_X
         self.ui.fov_x.setText(f"{self.fov_x:.1f}")
@@ -219,8 +250,18 @@ class SettingsDlg(QDialog):
         cv2.imwrite(Path.joinpath(output_dir,mPATH.name), input_image)
         #cv2.imwrite(Path.joinpath(output_dir,'ishodnik_undist.jpg'), input_image_undst)
 
-        #QDesktopServices.openUrl(QUrl.fromLocalFile(output_dir))
+        
 
         print("ply file saved")
+
+
+    def OnFolderOpen(self):
+        img_path = self.file_img_path       
+        mPATH = Path(img_path)
+        img_name = mPATH.name
+        img_name_without_ext = mPATH.stem
+        img_dir = mPATH.parent
+        output_dir = Path(img_dir) / Path(img_name_without_ext)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(output_dir))
 
 
