@@ -71,14 +71,20 @@ class SettingsDlg(QDialog):
 
         self.fov_x=None
         self.max_depth_m = 100
+        self.metric_scale_mnoj = 1.0
+
         self.ui.max_depth_m.setText(f"{self.max_depth_m:.1f}")
+        self.ui.metric_scale_mnoj.setText(f"{self.metric_scale_mnoj:.3f}")
+        
 
         validator = QDoubleValidator()     
         #validator.setNotation(QDoubleValidator.StandardNotation)
-        #validator = QRegularExpressionValidator(QRegularExpression(r"^(0|[1-9]\d*)(\.\d+)?$"))          
-        validator.setRange(0.1, 120.0, 2)
+        validator = QRegularExpressionValidator(QRegularExpression(r"^(0|[1-9]\d*)(\.\d+)?$"))          
+        #validator.setRange(0.1, 120.0, 2)
         self.ui.fov_x.setValidator(validator)
         self.ui.max_depth_m.setValidator(validator)
+        self.ui.metric_scale_mnoj.setValidator(validator)
+
         hh=10
 
     def show(self):
@@ -110,12 +116,15 @@ class SettingsDlg(QDialog):
     def updateText(self):
         self.ui.text1.update()
         
-    def OnButtonCalc(self):        
-        self.ui.text1.setPlainText(f"Calculation start\n")
+    def OnButtonCalc(self):   
+        self.ui.calcButton.setEnabled(False)
+        self.ui.text1.appendPlainText(f"Calculation start\n")
+        #self.ui.text1.setPlainText(f"Calculation start\n")
         self.ui.text1.moveCursor(QTextCursor.End)
         self.ui.text1.update()
 
         QTimer.singleShot(1000,self.updateText)       
+        time.sleep(1)
 
         img_path = self.file_img_path       
         mPATH = Path(img_path)
@@ -174,6 +183,10 @@ class SettingsDlg(QDialog):
         #fov_1 = 55
         # Infer 
         
+        if(self.fov_x is not None):
+            self.fov_x = float(self.ui.fov_x.text())
+        self.max_depth_m = float(self.ui.max_depth_m.text())
+        self.metric_scale_mnoj = float(self.ui.metric_scale_mnoj.text())
         start = time.time()
         """
         def infer(
@@ -195,11 +208,12 @@ class SettingsDlg(QDialog):
                 resolution_level=9,
                 force_projection=True,
                 apply_mask=True,
-                fov_x=None,                
+                fov_x=self.fov_x,                
                 use_fp16=False,
-                max_depth_m=self.max_depth_m)
+                max_depth_m=self.max_depth_m,
+                metric_scale_mnoj = self.metric_scale_mnoj)
         #output = model.infer(input_image_t)
-        points, depth, mask, intrinsics, focal_X  = output['points'].cpu().numpy(), output['depth'].cpu().numpy(), output['mask'].cpu().numpy(), output['intrinsics'].cpu().numpy(),  output['focal'].cpu().numpy()
+        points, depth, mask, intrinsics, focal_X, fx, fy  = output['points'].cpu().numpy(), output['depth'].cpu().numpy(), output['mask'].cpu().numpy(), output['intrinsics'].cpu().numpy(),  output['focal'].cpu().numpy(),  output['fx'].cpu().numpy(),  output['fy'].cpu().numpy()
         normal = output['normal'].cpu().numpy()
         end = time.time()
         print("Calculation done "+img_name+f" {end - start: .2f} sec")
@@ -219,8 +233,8 @@ class SettingsDlg(QDialog):
         cv2.imwrite(Path.joinpath(output_dir,'mask.png'), (mask * 255).astype(np.uint8))
 
         self.Ui_MainWindow.gView2.addImage(Path.joinpath(output_dir,img_name_without_ext+".png"))
-        self.Ui_MainWindow.gView2.addEXR(Path.joinpath(output_dir,img_name_without_ext+".exr"),focal_X)
-        self.Ui_MainWindow.gView1.addEXR(Path.joinpath(output_dir,img_name_without_ext+".exr"),focal_X)
+        self.Ui_MainWindow.gView2.addEXR(Path.joinpath(output_dir,img_name_without_ext+".exr"),focal_X, fx, fy)
+        self.Ui_MainWindow.gView1.addEXR(Path.joinpath(output_dir,img_name_without_ext+".exr"),focal_X, fx, fy)
         
 
         #cv2.imwrite(str(save_pathtntdjqtntdPA110016 + 'points.exr'), cv2.cvtColor(points, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_EXR_TYPE, cv2.IMWRITE_EXR_TYPE_FLOAT])
@@ -253,15 +267,17 @@ class SettingsDlg(QDialog):
         
 
         print("ply file saved")
+        self.ui.calcButton.setEnabled(True)
 
 
     def OnFolderOpen(self):
-        img_path = self.file_img_path       
-        mPATH = Path(img_path)
-        img_name = mPATH.name
-        img_name_without_ext = mPATH.stem
-        img_dir = mPATH.parent
-        output_dir = Path(img_dir) / Path(img_name_without_ext)
-        QDesktopServices.openUrl(QUrl.fromLocalFile(output_dir))
+        if(self.file_img_path is not None):
+            img_path = self.file_img_path       
+            mPATH = Path(img_path)
+            img_name = mPATH.name
+            img_name_without_ext = mPATH.stem
+            img_dir = mPATH.parent
+            output_dir = Path(img_dir) / Path(img_name_without_ext)
+            QDesktopServices.openUrl(QUrl.fromLocalFile(output_dir))
 
 

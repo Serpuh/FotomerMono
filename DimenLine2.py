@@ -73,7 +73,9 @@ class DimenLine(QGraphicsItem):
         distance = self.P1.distanceToPoint(self.P2)
         
         # Format based on distance
-        if distance < 10:
+        if distance < 1:
+            return f"{distance:.3f}"
+        elif distance < 10:
             return f"{distance:.2f}"
         elif distance < 100:
             return f"{distance:.1f}"

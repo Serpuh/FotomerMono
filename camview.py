@@ -90,10 +90,12 @@ class CamView(QGraphicsView, QObject):
 
         return path    
 
-    def addEXR(self, path, fov_x):
+    def addEXR(self, path, fov_x, fx, fy):
         self.mogeExr = cv2.imread(path, cv2.IMREAD_ANYDEPTH | cv2.IMREAD_ANYCOLOR)
         self.height_img, self.width_img = self.mogeExr.shape[:2]
-        self.f_pix = (self.height_img/2.)/math.tan( math.radians(fov_x/2.) )        
+        self.f_pix = (self.height_img/2.)/math.tan( math.radians(fov_x/2.) )*2     
+        self.fx = fx
+        self.fy = fy
         hh = 0
     
     def wheelEvent(self, event):        
@@ -179,11 +181,16 @@ class CamView(QGraphicsView, QObject):
         cx_pix = self.width_img / 2
         cy_pix = self.height_img / 2
 
+        fx_pix = self.width_img * self.fx
+        fy_pix = self.height_img * self.fy
+
         y1 = int(round(scene_pt.y()))
         x1 = int(round(scene_pt.x()))
         X:float = None
         Y:float = None
         Z:float = None
+
+
 
         if x1>=0 and x1<self.width_img and y1>=0 and y1<self.height_img:
                 Z = self.mogeExr[ y1,x1 ]                
@@ -193,9 +200,13 @@ class CamView(QGraphicsView, QObject):
                     self.statusBar.showMessage("No data")
                     bb = False
                 else:
-                    X = (x1 - cx_pix) * Z / self.f_pix
-                    Y = (y1 - cy_pix) * Z / self.f_pix
-                    result = f"XYZ {X: .2f} {Y: .2f} {Z: .2f}"
+                    #X = (x1 - cx_pix) * Z / self.f_pix
+                    #Y = (y1 - cy_pix) * Z / self.f_pix
+                    X = (x1 - cx_pix) * Z / fx_pix
+                    Y = (y1 - cy_pix) * Z / fy_pix
+
+                    result = f"XYZ {X: .2f}{Y: .2f} {Z: .2f} scene_pt {x1:.2f} {y1:.2f}"
+
                     self.statusBar.showMessage(result)
                     #print(result)  
                     bb = True

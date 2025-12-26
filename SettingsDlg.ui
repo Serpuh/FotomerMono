@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>403</width>
-    <height>221</height>
+    <height>243</height>
    </rect>
   </property>
   <property name="font">
@@ -18,75 +18,28 @@
   <property name="windowTitle">
    <string>Calculate depth map</string>
   </property>
-  <widget class="QPushButton" name="calcButton">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>170</y>
-     <width>156</width>
-     <height>36</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>13</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Calculate</string>
-   </property>
-  </widget>
   <widget class="QPlainTextEdit" name="text1">
    <property name="geometry">
     <rect>
      <x>225</x>
      <y>15</y>
      <width>171</width>
-     <height>191</height>
+     <height>216</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <pointsize>13</pointsize>
     </font>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="openFolderButton">
-   <property name="geometry">
-    <rect>
-     <x>169</x>
-     <y>170</y>
-     <width>46</width>
-     <height>36</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>13</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normalon>res/folder_blue.png</normalon>
-    </iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>32</width>
-     <height>32</height>
-    </size>
    </property>
   </widget>
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>11</x>
-     <y>12</y>
-     <width>201</width>
-     <height>132</height>
+     <x>12</x>
+     <y>13</y>
+     <width>206</width>
+     <height>166</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -178,6 +131,69 @@
        <font>
         <pointsize>13</pointsize>
        </font>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>Scale</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="metric_scale_mnoj"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>211</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="calcButton">
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Calculate</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="openFolderButton">
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>13</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>res/folder_blue.png</normalon>
+       </iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
       </property>
      </widget>
     </item>

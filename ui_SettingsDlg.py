@@ -16,36 +16,24 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QDialog, QFormLayout,
-    QLabel, QLineEdit, QPlainTextEdit, QPushButton,
-    QSizePolicy, QWidget)
+    QHBoxLayout, QLabel, QLineEdit, QPlainTextEdit,
+    QPushButton, QSizePolicy, QWidget)
 
 class Ui_SettingsDlg(object):
     def setupUi(self, SettingsDlg):
         if not SettingsDlg.objectName():
             SettingsDlg.setObjectName(u"SettingsDlg")
-        SettingsDlg.resize(403, 221)
+        SettingsDlg.resize(403, 243)
         font = QFont()
         font.setPointSize(13)
         SettingsDlg.setFont(font)
-        self.calcButton = QPushButton(SettingsDlg)
-        self.calcButton.setObjectName(u"calcButton")
-        self.calcButton.setGeometry(QRect(10, 170, 156, 36))
-        self.calcButton.setFont(font)
         self.text1 = QPlainTextEdit(SettingsDlg)
         self.text1.setObjectName(u"text1")
-        self.text1.setGeometry(QRect(225, 15, 171, 191))
+        self.text1.setGeometry(QRect(225, 15, 171, 216))
         self.text1.setFont(font)
-        self.openFolderButton = QPushButton(SettingsDlg)
-        self.openFolderButton.setObjectName(u"openFolderButton")
-        self.openFolderButton.setGeometry(QRect(169, 170, 46, 36))
-        self.openFolderButton.setFont(font)
-        icon = QIcon()
-        icon.addFile(u"res/folder_blue.png", QSize(), QIcon.Mode.Normal, QIcon.State.On)
-        self.openFolderButton.setIcon(icon)
-        self.openFolderButton.setIconSize(QSize(32, 32))
         self.widget = QWidget(SettingsDlg)
         self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(11, 12, 201, 132))
+        self.widget.setGeometry(QRect(12, 13, 206, 166))
         self.formLayout = QFormLayout(self.widget)
         self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -101,6 +89,39 @@ class Ui_SettingsDlg(object):
 
         self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.max_depth_m)
 
+        self.label_5 = QLabel(self.widget)
+        self.label_5.setObjectName(u"label_5")
+
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.LabelRole, self.label_5)
+
+        self.metric_scale_mnoj = QLineEdit(self.widget)
+        self.metric_scale_mnoj.setObjectName(u"metric_scale_mnoj")
+
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.FieldRole, self.metric_scale_mnoj)
+
+        self.widget1 = QWidget(SettingsDlg)
+        self.widget1.setObjectName(u"widget1")
+        self.widget1.setGeometry(QRect(10, 190, 211, 42))
+        self.horizontalLayout = QHBoxLayout(self.widget1)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.calcButton = QPushButton(self.widget1)
+        self.calcButton.setObjectName(u"calcButton")
+        self.calcButton.setFont(font)
+
+        self.horizontalLayout.addWidget(self.calcButton)
+
+        self.openFolderButton = QPushButton(self.widget1)
+        self.openFolderButton.setObjectName(u"openFolderButton")
+        self.openFolderButton.setMaximumSize(QSize(50, 16777215))
+        self.openFolderButton.setFont(font)
+        icon = QIcon()
+        icon.addFile(u"res/folder_blue.png", QSize(), QIcon.Mode.Normal, QIcon.State.On)
+        self.openFolderButton.setIcon(icon)
+        self.openFolderButton.setIconSize(QSize(32, 32))
+
+        self.horizontalLayout.addWidget(self.openFolderButton)
+
 
         self.retranslateUi(SettingsDlg)
 
@@ -109,12 +130,13 @@ class Ui_SettingsDlg(object):
 
     def retranslateUi(self, SettingsDlg):
         SettingsDlg.setWindowTitle(QCoreApplication.translate("SettingsDlg", u"Calculate depth map", None))
-        self.calcButton.setText(QCoreApplication.translate("SettingsDlg", u"Calculate", None))
-        self.openFolderButton.setText("")
         self.label.setText(QCoreApplication.translate("SettingsDlg", u"Device", None))
         self.label_4.setText(QCoreApplication.translate("SettingsDlg", u"Quality", None))
         self.label_2.setText(QCoreApplication.translate("SettingsDlg", u"Focus_X, grad", None))
         self.fov_x.setText(QCoreApplication.translate("SettingsDlg", u"None", None))
         self.label_3.setText(QCoreApplication.translate("SettingsDlg", u"Depth max, m", None))
+        self.label_5.setText(QCoreApplication.translate("SettingsDlg", u"Scale", None))
+        self.calcButton.setText(QCoreApplication.translate("SettingsDlg", u"Calculate", None))
+        self.openFolderButton.setText("")
     # retranslateUi
 

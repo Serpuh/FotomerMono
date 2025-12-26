@@ -1,5 +1,9 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
+TMP
+tmp
+jpg
+res
 .res
 .vs
 __pycache__
