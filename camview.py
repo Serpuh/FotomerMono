@@ -10,9 +10,9 @@ os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 import cv2
 import math
 
-#from Knot import Knot
-#from Knot2 import Knot2
-#from Knot3 import Knot3
+from Knot import Knot
+from Knot2 import Knot2
+from Knot3 import Knot3
 
 from DimenLine2 import DimenLine
 
@@ -63,11 +63,12 @@ class CamView(QGraphicsView, QObject):
 
         self.statusBar: QStatusBar = None
 
+
         self.ii=10
 
     def setSatusBar(self, statusBar):
         self.statusBar = statusBar
-        #self.statusBar.showMessage("From view")
+        self.statusBar.showMessage("From view")
 
     def on_knot_moved(self):
        #print(f"Knot moved to: {pos.x():.1f}, {pos.y():.1f}")
