@@ -82,14 +82,16 @@ class MainWindow(QMainWindow):
         if event.button() == Qt.LeftButton:
             print(f"Left button pressed at view coordinates: {event.pos()}")
 
-    def OnFileImgOpen(self):       
-        self.file_img_path, selected_filter = QFileDialog.getOpenFileName(
+    def OnFileImgOpen(self):            
+        path, selected_filter = QFileDialog.getOpenFileName(
             self,
             "Select a File",
             "",
             "Images (*.png *.jpg *.jpeg *.bmp *.gif);;"            
         )
-        if(self.file_img_path): 
+        if(path is not None and len(path)!=0):
+            self.file_img_path=path
+        #if(self.file_img_path): 
             self.file_img_path = self.ui.gView1.addImage(self.file_img_path)
 
             self.ui.gView2.addImage(self.file_img_path)
