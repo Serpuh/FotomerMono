@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Fotomer Mono</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<link href="main.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+.style1 {
+	font-size: 27px;
+	font-weight: bold;
+}
+.style3 {font-size: 18px; }
+.style4 {color: #FF0000}
+.style5 {font-size: 18px; font-weight: bold; }
+-->
+</style>
+<link rel="icon" href="res/favicon.ico" type="image/x-icon">
+<style type="text/css">
+<!--
+.style6 {font-size: 16px; font-weight: bold; }
+-->
+</style>
+</head>
+
+<body>
+<p align="center" class="style1">Fotomer Mono</p>
+<p align="center" class="style6">version 1.1.0 </p>
+<hr>
+<p class="style3">Программа <strong>Fotomer Mono  </strong>использует нейросетевые модели для определения карты глубины из одиночного снимка. Также карта глубины (EXR файл), где для каждого пикселя известно XYZ, преобразуется в 3D модель в формате <a href="#PLY">PLY</a>. </p>
+<p class="style3">Интерфейс программы </p>
+<p align="center"><span class="style1"><a href="res/main.jpg" target="_blank"><img src="res/main.jpg" width="1146" height="546" border="0""></a></span></p>
+<hr>
+<p align="left" class="style3">Меню программы :</p>
+<p align="left" class="style3"><strong><img src="res/menu1.jpg" width="235" height="33"></strong> </p>
+<p align="left" class="style3"><img src="res/ImgOpen.jpg" width="32" height="33"> - загрузить изображение, также программа поддерживает Drag And Drop, можно просто  перетащить изображение на окно программы. <span class="style4">Внимание</span>, программа в данный момент не поддерживает русские буквы в названии пути в Windows. </p>
+<p align="left" class="style3"><a href="#Calc"><img src="res/calc.jpg" width="57" height="33" border="0"></a>- <a href="#Calc">расчет</a> карты глубины и 3D модели в формате <a href="#PLY">PLY</a>. Данные сохраняются в папку рядом с изображением, папка имеет такое же имя.</p>
+<p align="left" class="style3"><strong><a href="#DimenLine"><img src="res/DimLine.jpg" width="30" height="33" border="0"></a></strong> - <a href="#DimenLine">установка</a> размерной линии. </p>
+<p align="left" class="style3"><strong><img src="res/Folder.jpg" width="31" height="33"></strong> - открыть папку с результатами расчета.</p>
+<p align="left" class="style3"><strong><img src="res/Print.jpg" width="27" height="33"></strong> - сохранить левое и правое изображение вместе с размерными линиями. Не доступно в <strong>Demo</strong> версии. </p>
+<p align="left" class="style3"><strong><img src="res/help.jpg" width="28" height="33"></strong> - справка.</p>
+<p align="left" class="style3">После расчета  в statusBar в левом нижнем углу отображается координата курсора мыши в XYZ на основе карты глубины, Distance расстояние от камеры до указанной точки. </p>
+<hr>
+<p align="left" class="style3">Управление:</p>
+<p align="left" class="style3">Средняя клавиша мыши - перетаскивание изображения и Zoom.</p>
+<p align="left" class="style3">Правая клавиша мыши - Fit To Window подогнать изображение под размер окна. </p>
+<p align="left" class="style3"> Клавиши <strong>+ - </strong> - увеличить или уменьшить размер текста размерной линии. </p>
+<p align="left" class="style3">Клавиша Ctrl-S - сохранить проект. </p>
+<hr>
+<p align="left" class="style3"><span class="style1"><img src="res/calc.jpg" width="57" height="33"></span><a name="Calc"></a></p>
+<p align="left" class="style3"><span class="style1"><img src="res/SettingsDlg.jpg" width="448" height="357"></span></p>
+<p align="left" class="style3"><strong>Device</strong> - выбор устройства для запуска модели CPU или GPU. На CPU расчет идет медленнее и желательно выбирать Quality качество модели middle или small. Также для ускорения расчета можно предварительно уменьшить размер изображения. </p>
+<p align="left" class="style3"><a href="#Focus">Focus_X </a>- это угол поля зрения камеры по оси X в градусах, при первом расчете программа сама его рассчитывает, далее его можно корректировать для уточнения размеров.</p>
+<p align="left" class="style3"><strong>Depth max</strong> - это глубина 3D модели в метрах от объектива камеры по оси Z, чтобы убрать лишнюю информацию на заднем плане можно поставить меньшее значение. </p>
+<p align="left" class="style3"><strong>Scale</strong> - при расчете масштаб модели оценивается приблизительно, если на снимке известен один линейный размер, можно уточнить масштаб при помощи <a href="#Adjast">Adjast Dimension</a>. </p>
+<p align="left" class="style3"><strong>Mesh filter (0-1)</strong> - значение 1 все точки, но 3D изображение может быть слишком &quot;шумным&quot;.</p>
+<p align="left" class="style3"><a href="#Adjast">Adjast dimension</a> - уточнение размера и масштаба по известному линейному размеру. </p>
+<p align="left" class="style3"><strong>3D ply (more time)</strong> - файлы PLY имеют относительно большой размер и для сохранения требуют времени, при уточненении Focus, Depth, Scale можно убрать чек-бокс. </p>
+<hr>
+<p><span class="style3"><img src="res/DimLine.jpg" width="30" height="33"></span><a name="DimenLine"></a><span class="style3">При указании размерной линии важно указывать размер в границах объекта, например диаметр бревна 0.405, но стоит чут<span class="style3">ь</span> вынести размерную линия за габарит бревна, как он резко увеличивается до 0.472. Также это можно отследить в Status Bar, когда параметр Distance резко возрастает. </span></p>
+<p align="left"><span class="style3"><a href="res/brevno1.jpg" target="_blank"><img src="res/brevno1.jpg" width="586" height="381" border="0"></a></span></p>
+<p align="left"><span class="style3"><span class="style1"><a href="res/brevno2.jpg" target="_blank"><img src="res/brevno2.jpg" width="586" height="381" border="0"></a></span></span></p>
+<hr>
+<p><span class="style3"><strong>Focus_X</strong><a name="Focus"></a> - это угол поля зрения камеры по оси X в градусах, при первом расчете программа сама его рассчитывает, далее его можно корректировать для уточнения размеров.</span></p>
+<p class="style3">Например для данного изображения автоматически был рассчитан угол в 65 градусов, но наиболее корректные размеры получаются для Fov_X 50 градусов. Размер линеек 300мм, 200мм и сторона треугольника 150мм. </p>
+<p align="left"><span class="style3"><a href="res/150.jpg" target="_blank"><img src="res/150.jpg" width="1061" height="344" border="0"></a></span> </p>
+<hr>
+<p><strong>Adjast dimension<a name="Adjast"></a></strong> - <span class="style3">уточнение размера и масштаба по известному линейному размеру</span>.</p>
+<p class="style3">Если известен линейный размер (в данном случае 0.15 сторона треугольника), в режиме &quot;Calculate&quot; укажите нужный размер на снимке, введите в поле &quot;Adjast to&quot; требуемый размер и нажмите кнопку &quot;Calculate&quot;, модель буде пересчитана. Также 3D модель PLY сохранится в данном масштабе и на ней можно производить измерения.</p>
+<p><span class="style3"><span class="style1"><a href="res/adjast1.jpg" target="_blank"><img src="res/adjast1.jpg" width="1061" height="369" border="0"></a></span></span></p>
+<hr>
+<p class="style3">Бесплатная программа для просмотра и редактирования 3D моделей <a href="https://www.cloudcompare.org/"  target="_blank">https://www.cloudcompare.org/</a><a name="PLY"></a></p>
+<p class="style3">Интерфейс программы CloudCompare</p>
+<p><span class="style5"><a href="res/CloudCompare.jpg" target="_blank"><img src="res/CloudCompare.jpg" width="898" height="488" border="0"></a></span></p>
+<p class="style3">Если в FotomerMono был указан масштаб, то на 3D модели в CloudCompare можно производить измерения в натуральную величину. В левом окне Db Tree нажмите на название облака</p>
+<p><span class="style5"><a href="res/DbTree.jpg" target="_blank"><img src="res/DbTree.jpg" width="220" height="224" border="0"></a></span> </p>
+<p><span class="style5"><img src="res/cc_menu.jpg" width="301" height="36"></span> <span class="style3">далее нажмите в меню &quot;Point picking&quot;</span> </p>
+<p><span class="style5"><a href="res/CloudCompare.jpg" target="_blank"><img src="res/PickingMenu.jpg" width="234" height="30"></a></span> <span class="style3">справа появится меню, в котором нажмите указанную кнопку. И далее на 3D виде укажите 2 точки.</span> </p>
+<hr>
+<p class="style3"><span class="style5">Другие применения программы</span></p>
+<p class="style3">Иногда в задачах видео-наблюдения требуется знать уравнение плоскости движения объектов для более точного трекинга, например плоскость парковки для точного<strong> определения координат объектов с одной камеры</strong> без сложных вычислений. Определить плоскость по 3D модели можно в сторонних программах, в следующей версии <strong>Fotomer Mono</strong> будет реализовано  определение плоскостей.</p>
+<p align="left"><a href="res/parking.jpg" target="_blank"><img src="res/parking.jpg" alt="parking" width="600" height="424" border="0"></a><a href="res/parkovka3d.jpg" target="_blank"><img src="res/parkovka3d.jpg" alt="parking3d" width="654" height="424" border="0"></a></p>
+<hr>
+<p align="center" class="style3"><font color="#006633">Вопросы, замечания и предложения направляйте 
+на <strong>sapr219@yandex.ru</strong></font></p>
+</body>
+</html>

@@ -1,0 +1,3 @@
+pyside6 create class derived from QGraphicsItem to show dimensional line with text and arrows
+
+pyside6 create class derived from QGraphicsItem to show dimensional line with text and arrows and setting in 2 mouse clicks

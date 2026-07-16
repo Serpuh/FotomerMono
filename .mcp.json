@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "deepseek-local": {
+      "command": "ollama",
+      "args": ["run", "deepseek-coder-v2"],
+      "transport": "stdio"
+    }
+  }
+}
