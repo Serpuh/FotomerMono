@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1035db40-8d1f-49b6-a7bf-bb2521e7fdc3}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>mainwindow.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|VisualStudio|Moge2 (Python 3.13 (64-bit))</InterpreterId>
+    <CommandLineArguments>--input C:\360\22_04\149_2500.jpg --output C:\360\22_04</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="moge\model\dinov2\hub\__pycache__\backbones.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\hub\__pycache__\utils.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\hub\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\attention.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\block.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\dino_head.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\drop_path.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\layer_scale.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\mlp.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\patch_embed.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\swiglu_ffn.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\layers\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\models\__pycache__\vision_transformer.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\models\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="moge\model\dinov2\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="moge\model\__pycache__\modules.cpython-313.pyc" />
+    <Content Include="moge\model\__pycache__\utils.cpython-313.pyc" />
+    <Content Include="moge\model\__pycache__\v2.cpython-313.pyc" />
+    <Content Include="moge\model\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="moge\utils\__pycache__\geometry_numpy.cpython-313.pyc" />
+    <Content Include="moge\utils\__pycache__\geometry_torch.cpython-313.pyc" />
+    <Content Include="moge\utils\__pycache__\io.cpython-313.pyc" />
+    <Content Include="moge\utils\__pycache__\tools.cpython-313.pyc" />
+    <Content Include="moge\utils\__pycache__\vis.cpython-313.pyc" />
+    <Content Include="moge\utils\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="moge\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="camview.py" />
+    <Compile Include="Commands.py" />
+    <Compile Include="DimenLine2.py" />
+    <Compile Include="icosahedron.py" />
+    <Compile Include="infer_panorama_my.py" />
+    <Compile Include="Knot.py" />
+    <Compile Include="Knot2.py" />
+    <Compile Include="mainwindow.py" />
+    <Compile Include="moge\model\dinov2\hub\backbones.py" />
+    <Compile Include="moge\model\dinov2\hub\utils.py" />
+    <Compile Include="moge\model\dinov2\hub\__init__.py" />
+    <Compile Include="moge\model\dinov2\layers\attention.py" />
+    <Compile Include="moge\model\dinov2\layers\block.py" />
+    <Compile Include="moge\model\dinov2\layers\dino_head.py" />
+    <Compile Include="moge\model\dinov2\layers\drop_path.py" />
+    <Compile Include="moge\model\dinov2\layers\layer_scale.py" />
+    <Compile Include="moge\model\dinov2\layers\mlp.py" />
+    <Compile Include="moge\model\dinov2\layers\patch_embed.py" />
+    <Compile Include="moge\model\dinov2\layers\swiglu_ffn.py" />
+    <Compile Include="moge\model\dinov2\layers\__init__.py" />
+    <Compile Include="moge\model\dinov2\models\vision_transformer.py" />
+    <Compile Include="moge\model\dinov2\models\__init__.py" />
+    <Compile Include="moge\model\dinov2\utils\cluster.py" />
+    <Compile Include="moge\model\dinov2\utils\config.py" />
+    <Compile Include="moge\model\dinov2\utils\dtype.py" />
+    <Compile Include="moge\model\dinov2\utils\param_groups.py" />
+    <Compile Include="moge\model\dinov2\utils\utils.py" />
+    <Compile Include="moge\model\dinov2\utils\__init__.py" />
+    <Compile Include="moge\model\dinov2\__init__.py" />
+    <Compile Include="moge\model\modules.py" />
+    <Compile Include="moge\model\utils.py" />
+    <Compile Include="moge\model\v1.py" />
+    <Compile Include="moge\model\v2.py" />
+    <Compile Include="moge\model\__init__.py" />
+    <Compile Include="moge\scripts\app.py" />
+    <Compile Include="moge\scripts\cli.py" />
+    <Compile Include="moge\scripts\eval_baseline.py" />
+    <Compile Include="moge\scripts\infer.py" />
+    <Compile Include="moge\scripts\infer_baseline.py" />
+    <Compile Include="moge\scripts\infer_panorama.py" />
+    <Compile Include="moge\scripts\train.py" />
+    <Compile Include="moge\scripts\vis_data.py" />
+    <Compile Include="moge\scripts\__init__.py" />
+    <Compile Include="moge\test\baseline.py" />
+    <Compile Include="moge\test\dataloader.py" />
+    <Compile Include="moge\test\metrics.py" />
+    <Compile Include="moge\test\__init__.py" />
+    <Compile Include="moge\train\dataloader.py" />
+    <Compile Include="moge\train\losses.py" />
+    <Compile Include="moge\train\utils.py" />
+    <Compile Include="moge\train\__init__.py" />
+    <Compile Include="moge\utils\alignment.py" />
+    <Compile Include="moge\utils\data_augmentation.py" />
+    <Compile Include="moge\utils\download.py" />
+    <Compile Include="moge\utils\geometry_numpy.py" />
+    <Compile Include="moge\utils\geometry_torch.py" />
+    <Compile Include="moge\utils\io.py" />
+    <Compile Include="moge\utils\panorama.py" />
+    <Compile Include="moge\utils\tools.py" />
+    <Compile Include="moge\utils\vis.py" />
+    <Compile Include="moge\utils\webfile.py" />
+    <Compile Include="moge\utils\webzipfile.py" />
+    <Compile Include="moge\utils\__init__.py" />
+    <Compile Include="moge\__init__.py" />
+    <Compile Include="onnx1.py" />
+    <Compile Include="RGBD.py" />
+    <Compile Include="SettingsDlg.py" />
+    <Compile Include="ui_form.py" />
+    <Compile Include="ui_SettingsDlg.py" />
+    <Compile Include="v2.py" />
+    <Compile Include="video_split.py" />
+    <Compile Include="video_split2.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|VisualStudio|Moge2 (Python 3.13 (64-bit))" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="moge\" />
+    <Folder Include="moge\model\" />
+    <Folder Include="moge\model\dinov2\" />
+    <Folder Include="moge\model\dinov2\hub\" />
+    <Folder Include="moge\model\dinov2\hub\__pycache__\" />
+    <Folder Include="moge\model\dinov2\layers\" />
+    <Folder Include="moge\model\dinov2\layers\__pycache__\" />
+    <Folder Include="moge\model\dinov2\models\" />
+    <Folder Include="moge\model\dinov2\models\__pycache__\" />
+    <Folder Include="moge\model\dinov2\utils\" />
+    <Folder Include="moge\model\dinov2\__pycache__\" />
+    <Folder Include="moge\model\__pycache__\" />
+    <Folder Include="moge\scripts\" />
+    <Folder Include="moge\test\" />
+    <Folder Include="moge\train\" />
+    <Folder Include="moge\utils\" />
+    <Folder Include="moge\utils\__pycache__\" />
+    <Folder Include="moge\__pycache__\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
