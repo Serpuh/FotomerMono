@@ -578,6 +578,10 @@ class CamView(QGraphicsView, QObject):
                     del item 
                     return
 
+        if event.key() == Qt.Key.Key_T:
+            self.command[0] = Commands.TRIANGLE
+            
+
         # Call parent method
         self.scene.update()
         super().keyPressEvent(event)
