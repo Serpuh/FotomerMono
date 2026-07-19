@@ -117,6 +117,7 @@
     <Compile Include="onnx1.py" />
     <Compile Include="RGBD.py" />
     <Compile Include="SettingsDlg.py" />
+    <Compile Include="Triangle.py" />
     <Compile Include="ui_form.py" />
     <Compile Include="ui_SettingsDlg.py" />
     <Compile Include="v2.py" />
