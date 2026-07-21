@@ -195,12 +195,10 @@ class SettingsDlg(QDialog, QObject):
         img_name_without_ext = mPATH.stem
         img_dir = mPATH.parent
         output_dir = Path(img_dir) / Path(img_name_without_ext)
-
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        dirPath = project_root
-     
+        dirPath = project_root     
 
         match self.ui.qualityComboBox.currentText():
             case "best":

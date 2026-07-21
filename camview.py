@@ -14,14 +14,15 @@ from pathlib import Path
 
 from Commands import Commands
 from DimenLine2 import DimenLine
-
-#from SettingsDlg import SettingsDlg
+from Triangle import Triangle
+from LineTriangle import *
 
 class CamView(QGraphicsView, QObject):
 
     transformChanged = Signal()
     scrollChanged = Signal()
     signalDimension = Signal(float)
+    triangle_created = Signal(Triangle)  # Signal emitted when a triangle is created
 
     textSize = 10
 
@@ -82,7 +83,177 @@ class CamView(QGraphicsView, QObject):
 
         # enable drag & drop for image files
         self.setAcceptDrops(True)
+
+         # Triangle creation state
+        self.creating_triangle = False
+        self.triangle_points = []  # List of QPointF for triangle vertices
+        self.triangle_3d_points = []  # List of QVector3D for 3D coordinates
+        self.temp_triangle = None  # Temporary preview triangle
+        self.triangle_click_count = 0
+
+        #Plane coefs
+        self.A: float = None
+        self.B: float = None
+        self.C: float = None
+        self.D: float = None
+
+        # For plane visualization
+        self._original_pixmap_item = None
+        self._original_pixmap = None
+        self._colored_pixmap = None
+        self._is_plane_visible = False
+
+
+    def colorPixelsAbovePlane(self, h: float = 0.03):
+        """
+        Color pixels red if they are within distance h of the plane Ax+By+Cz+D=0.
+        Saves the colored image for later display with showCurrPlane().
+    
+        Args:
+            h: Threshold distance from the plane in 3D space (default: 0.03)
+        """
+        if self.mogeExr is None:
+            return
+    
+        # Check if plane coefficients are set
+        if any(coef is None for coef in [self.A, self.B, self.C, self.D]):
+            self.statusBar.showMessage("Plane coefficients not set")
+            return
+    
+        # Get image dimensions
+        height, width = self.mogeExr.shape[:2]
+    
+        # Get camera intrinsics
+        cx_pix = self.width_img / 2
+        cy_pix = self.height_img / 2
+        fx_pix = self.width_img * self.fx
+        fy_pix = self.height_img * self.fy
+    
+        # Find the pixmap item in the scene
+        pixmap_item = None
+        all_items = self.scene.items()
+        for item in all_items:
+            if isinstance(item, QGraphicsPixmapItem):
+                pixmap_item = item
+                break
+    
+        if pixmap_item is None:
+            self.statusBar.showMessage("No image found in scene")
+            return
+    
+        # Store the original pixmap item for later restoration
+        self._original_pixmap_item = pixmap_item
+        self._original_pixmap = pixmap_item.pixmap()
+    
+        # Get a copy of the QImage from the pixmap
+        qimage = pixmap_item.pixmap().toImage()
+    
+        # Convert to RGB888 if needed
+        if qimage.format() != QImage.Format_RGB888:
+            qimage = qimage.convertToFormat(QImage.Format_RGB888)
+    
+        # Calculate plane normal magnitude
+        normal_magnitude = math.sqrt(self.A*self.A + self.B*self.B + self.C*self.C)
+        if normal_magnitude == 0:
+            self.statusBar.showMessage("Invalid plane coefficients")
+            return
+    
+        # Iterate through all pixels and modify QImage directly
+        for y in range(height):
+            for x in range(width):
+                # Get depth value from original EXR data
+                Z = self.mogeExr[y, x]
+            
+                # Skip invalid depth values (inf, nan, or too large)
+                if not math.isfinite(Z) or abs(Z) > 1e6:
+                    continue
+            
+                # Calculate 3D coordinates
+                X = (x - cx_pix) * Z / fx_pix
+                Y = (y - cy_pix) * Z / fy_pix
+            
+                # Calculate distance from the plane
+                signed_distance = (self.A * X + self.B * Y + self.C * Z + self.D) / normal_magnitude
+            
+                # If distance is within threshold, color the pixel red
+                if abs(signed_distance) <= h:
+                    # Set pixel to red in QImage (RGB format)
+                    qimage.setPixelColor(x, y, QColor(125, 125, 125))
+    
+        # Store the colored pixmap for later display
+        self._colored_pixmap = QPixmap.fromImage(qimage)
+        self._is_plane_visible = False  # Initially not shown
+    
+        self.statusBar.showMessage(f"Computed pixels within {h:.3f} units of plane. Use showCurrPlane() to display.")
+    
+
+    def showCurrPlane(self):
+        """
+        Toggle display of the colored plane image.
+        First call shows the colored image, second call restores the original image.
+        """
+        # Check if we have colored image ready
+        if not hasattr(self, '_colored_pixmap') or self._colored_pixmap is None:
+            self.statusBar.showMessage("No plane data available. Run colorPixelsAbovePlane() first.")
+            return
+    
+        if not hasattr(self, '_original_pixmap_item') or self._original_pixmap_item is None:
+            self.statusBar.showMessage("Original image not found.")
+            return
+    
+        # Find current pixmap item in the scene
+        current_pixmap_item = None
+        all_items = self.scene.items()
+        for item in all_items:
+            if isinstance(item, QGraphicsPixmapItem):
+                current_pixmap_item = item
+                break
+    
+        if current_pixmap_item is None:
+            self.statusBar.showMessage("No image found in scene")
+            return
+    
+        # Toggle visibility
+        if not hasattr(self, '_is_plane_visible') or not self._is_plane_visible:
+            # Show colored image
+            # Remove current pixmap item
+            self.scene.removeItem(current_pixmap_item)
         
+            # Create new pixmap item with colored image
+            new_pixmap_item = QGraphicsPixmapItem(self._colored_pixmap)
+            self.scene.addItem(new_pixmap_item)
+        
+            # Move to the back (behind all other items)
+            all_items_after = self.scene.items()
+            if len(all_items_after) > 1:
+                for item in all_items_after:
+                    if item != new_pixmap_item:
+                        new_pixmap_item.stackBefore(item)
+                        break
+        
+            self.scene.setSceneRect(new_pixmap_item.boundingRect())
+            self._is_plane_visible = True
+            self.statusBar.showMessage("Showing colored plane")
+        else:
+            # Restore original image
+            # Remove current pixmap item
+            self.scene.removeItem(current_pixmap_item)
+        
+            # Restore original pixmap item
+            original_pixmap_item = QGraphicsPixmapItem(self._original_pixmap)
+            self.scene.addItem(original_pixmap_item)
+        
+            # Move to the back (behind all other items)
+            all_items_after = self.scene.items()
+            if len(all_items_after) > 1:
+                for item in all_items_after:
+                    if item != original_pixmap_item:
+                        original_pixmap_item.stackBefore(item)
+                        break
+        
+            self.scene.setSceneRect(original_pixmap_item.boundingRect())
+            self._is_plane_visible = False
+            self.statusBar.showMessage("Restored original image")
 
     def removeMirorDimenLine(self, orig: DimenLine):
         all_items = self.scene.items()  
@@ -257,7 +428,7 @@ class CamView(QGraphicsView, QObject):
                             self.linkView.scene.addItem(final_dimension_line.clone())
 
                     all_items = self.scene.items()
-                    h=0
+                    
                             
             #elif reader.isEndElement():
              #   print(f"Конец элемента: {reader.name()}")
@@ -473,6 +644,92 @@ class CamView(QGraphicsView, QObject):
                 self.creating_dimension = False
                 self.first_click_point = None
                 self.first_click_point_3d = None
+
+
+                # Triangle creation
+        if (event.button() == Qt.LeftButton and self.command[0] == Commands.TRIANGLE and self.bOverExr):
+            scene_pos = self.mapToScene(event.pos())
+            
+            # Get 3D coordinates
+            vec3d, bb = self.get_XYZ(scene_pos)
+            if not bb:
+                # If clicked outside valid depth data, ignore
+                super().mousePressEvent(event)
+                return
+            
+            if not self.creating_triangle:
+                # Start creating a new triangle - first click
+                self.creating_triangle = True
+                self.triangle_points = [scene_pos]
+                self.triangle_3d_points = [vec3d]
+                self.triangle_click_count = 1
+                
+                # Create temporary triangle with just one point (will be updated on subsequent clicks)
+                self.temp_triangle = Triangle(
+                    scene_pos, scene_pos, scene_pos,
+                    vec3d, vec3d, vec3d,
+                    CamView.textSize, True
+                )
+                self.scene.addItem(self.temp_triangle)
+                self.temp_triangle.setFlag(QGraphicsItem.ItemIsSelectable, False)
+                self.temp_triangle.setFlag(QGraphicsItem.ItemIsMovable, False)
+                
+            elif self.triangle_click_count == 1:
+                # Second click - second vertex
+                self.triangle_points.append(scene_pos)
+                self.triangle_3d_points.append(vec3d)
+                self.triangle_click_count = 2
+                
+                # Update temporary triangle with two points
+                p1 = self.triangle_points[0]
+                p2 = self.triangle_points[1]
+                # Use the same 3D point as placeholder for third point
+                self.temp_triangle.set_points(
+                    p1, p2, p2,
+                    self.triangle_3d_points[0], self.triangle_3d_points[1], self.triangle_3d_points[1]
+                )
+                
+            elif self.triangle_click_count == 2:
+                # Third click - complete the triangle
+                self.triangle_points.append(scene_pos)
+                self.triangle_3d_points.append(vec3d)
+                self.triangle_click_count = 3
+                
+                # Create final triangle
+                final_triangle = Triangle(
+                    self.triangle_points[0], 
+                    self.triangle_points[1], 
+                    self.triangle_points[2],
+                    self.triangle_3d_points[0],
+                    self.triangle_3d_points[1],
+                    self.triangle_3d_points[2],
+                    CamView.textSize
+                )
+                self.scene.addItem(final_triangle)
+
+                self.A, self.B, self.C, self.D = plane_equation( self.triangle_3d_points[0],self.triangle_3d_points[1],self.triangle_3d_points[2])
+                self.colorPixelsAbovePlane(0.05)
+                    
+                
+                # Mirror to linked view if exists
+                if(self.linkView != None):
+                    self.linkView.scene.addItem(final_triangle.clone())
+                    self.linkView.scene.update()
+                
+                # Emit signal
+                self.triangle_created.emit(final_triangle)
+                
+                # Remove temporary triangle
+                if self.temp_triangle:
+                    self.scene.removeItem(self.temp_triangle)
+                    self.temp_triangle = None
+                
+                # Reset triangle creation state
+                self.creating_triangle = False
+                self.triangle_points = []
+                self.triangle_3d_points = []
+                self.triangle_click_count = 0
+
         self.scene.update()
         super().mousePressEvent(event)
 
@@ -543,6 +800,30 @@ class CamView(QGraphicsView, QObject):
             scene_pos = self.mapToScene(event.pos())
             vec3d2, bb = self.get_XYZ(scene_pos)            
             self.temp_dimension_line.set_points(self.first_click_point, scene_pos,  self.first_click_point_3d, vec3d2)
+
+        # Update temporary triangle preview
+        if (self.creating_triangle and self.temp_triangle and 
+            self.command[0] == Commands.TRIANGLE and self.bOverExr):
+            scene_pos = self.mapToScene(event.pos())
+            vec3d, bb = self.get_XYZ(scene_pos)
+            
+            if self.triangle_click_count == 1:
+                # Update second point preview after first click
+                p1 = self.triangle_points[0]
+                # Show preview with two identical points (just a line)
+                self.temp_triangle.set_points(
+                    p1, scene_pos, scene_pos,
+                    self.triangle_3d_points[0], vec3d, vec3d
+                )
+            elif self.triangle_click_count == 2:
+                # Update third point preview after second click
+                p1 = self.triangle_points[0]
+                p2 = self.triangle_points[1]
+                # Show complete triangle preview
+                self.temp_triangle.set_points(
+                    p1, p2, scene_pos,
+                    self.triangle_3d_points[0], self.triangle_3d_points[1], vec3d
+                )
                      
         super().mouseMoveEvent(event)
 
@@ -578,9 +859,16 @@ class CamView(QGraphicsView, QObject):
                     del item 
                     return
 
-        if event.key() == Qt.Key.Key_T:
+        if event.key() == Qt.Key.Key_T:            
             self.command[0] = Commands.TRIANGLE
-            
+            self.creating_triangle = False
+            self.triangle_points = []
+            self.triangle_3d_points = []
+            self.temp_triangle = None
+            self.triangle_click_count = 0
+           
+        if event.key() == Qt.Key.Key_P:
+            self.showCurrPlane()
 
         # Call parent method
         self.scene.update()

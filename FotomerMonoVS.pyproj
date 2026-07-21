@@ -57,6 +57,7 @@
     <Compile Include="infer_panorama_my.py" />
     <Compile Include="Knot.py" />
     <Compile Include="Knot2.py" />
+    <Compile Include="LineTriangle.py" />
     <Compile Include="mainwindow.py" />
     <Compile Include="moge\model\dinov2\hub\backbones.py" />
     <Compile Include="moge\model\dinov2\hub\utils.py" />
